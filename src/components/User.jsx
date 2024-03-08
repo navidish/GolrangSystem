@@ -1,8 +1,29 @@
-import Table from '../uiKit/Table';
+import { useState } from 'react';
 
 import { HiOutlineTrash } from 'react-icons/hi';
 import { TbPencilMinus } from 'react-icons/tb';
-const User = ({ user, index }) => {
+import { toast } from 'react-hot-toast';
+import Table from '../uiKit/Table';
+import Modal from '../uiKit/Modal';
+import DeleteUser from './DeleteUser';
+import { useMutation } from '@tanstack/react-query';
+import { deleteUserApi } from '../services/users';
+
+const User = ({ user, index, onDelete }) => {
+  const [modalState, setModealState] = useState({
+    isEdit: false,
+    isDelete: false,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: deleteUserApi,
+    onSuccess: () => {
+      toast.success('حذف کاربر با موفقیت انجام شد.');
+    },
+
+    onError: (err) => toast.error(`حذف  کاربر با ${err} مواجه شد.`),
+  });
+
   return (
     <Table.Row>
       <td>{index + 1}</td>
@@ -16,14 +37,43 @@ const User = ({ user, index }) => {
       <td>
         <div className="flex items-center gap-x-4">
           <>
-            <button>
+            <button
+              onClick={() => setModealState({ ...modalState, isEdit: true })}
+            >
               <TbPencilMinus className="w-5 h-5 text-primary-900" />
             </button>
+            <Modal
+              title={`ویرایش ${user?.name}`}
+              open={modalState.isEdit}
+              onClose={() => setModealState({ ...modalState, isEdit: false })}
+            ></Modal>
           </>
           <>
-            <button>
+            <button
+              onClick={() => setModealState({ ...modalState, isDelete: true })}
+            >
               <HiOutlineTrash className="w-5 h-5 text-error" />
             </button>
+            <Modal
+              title={`حذف ${user?.name}`}
+              open={modalState.isDelete}
+              onClose={() => setModealState({ ...modalState, isDelete: false })}
+            >
+              <DeleteUser
+                resourceName={user?.name}
+                onClose={() =>
+                  setModealState({ ...modalState, isDelete: false })
+                }
+                onConfirm={() =>
+                  mutate(user.id, {
+                    onSuccess: () => {
+                      setModealState({ ...modalState, isDelete: false });
+                      onDelete(user?.id);
+                    },
+                  })
+                }
+              />
+            </Modal>
           </>
         </div>
       </td>

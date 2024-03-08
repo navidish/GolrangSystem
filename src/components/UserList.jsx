@@ -4,15 +4,25 @@ import Loading from '../uiKit/Loading';
 import Empty from '../uiKit/Empty';
 import Table from '../uiKit/Table';
 import User from './User';
+import { useEffect, useState } from 'react';
 
 const UserList = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['user-list'],
     queryFn: getUserListApi,
   });
-  const users = data || {};
 
-  if (!users.length) return <Empty resourceName={'لیست کاربران'} />;
+  const [users, setUsers] = useState(data);
+
+  useEffect(() => {
+    setUsers(data);
+  }, [data]);
+
+  const handledelte = (deletedId) => {
+    setUsers(users.filter((user) => user.id !== deletedId));
+  };
+
+  if (!users?.length) return <Empty resourceName={'لیست کاربران'} />;
   if (isLoading) return <Loading />;
   return (
     <div>
@@ -30,7 +40,12 @@ const UserList = () => {
         </Table.Header>
         <Table.Body>
           {users?.map((user, index) => (
-            <User key={user.id} user={user} index={index} />
+            <User
+              key={user.id}
+              user={user}
+              index={index}
+              onDelete={handledelte}
+            />
           ))}
         </Table.Body>
       </Table>

@@ -58,6 +58,24 @@ body {
   padding: 0;
   margin: 0;
 }
+
+@layer components {
+  .btn {
+    @apply px-3 py-1 font-bold rounded-xl transition-all duration-300;
+  }
+  .btn--primary {
+    @apply px-4 py-3 border bg-stone-900 border-stone-900 text-white  hover:bg-white hover:text-stone-900 hover:border hover:border-stone-900;
+  }
+  .btn--secondary {
+    @apply bg-secondary-600 text-secondary-100;
+  }
+  .btn--outline {
+    @apply border border-secondary-700 text-secondary-700;
+  }
+  .btn--danger {
+    @apply bg-rose-600 border-rose-700 text-white  hover:bg-white hover:text-rose-700 hover:border hover:border-rose-700;
+  }
+}
 /* TABLE */
 
 table {
