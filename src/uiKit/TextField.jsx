@@ -6,6 +6,7 @@ function TextField({
   register,
   required,
   validationSchema,
+  placeHolder,
 }) {
   return (
     <div>
@@ -14,6 +15,7 @@ function TextField({
         {required && <span className="text-error">*</span>}
       </label>
       <input
+        placeholder={placeHolder}
         id={name}
         className="textField__input"
         {...register(name, validationSchema)}

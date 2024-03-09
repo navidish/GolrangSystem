@@ -79,6 +79,7 @@ body {
     @apply bg-rose-600 border-rose-700 text-white  hover:bg-white hover:text-rose-700 hover:border hover:border-rose-700;
   }
 }
+
 /* TABLE */
 
 table {
