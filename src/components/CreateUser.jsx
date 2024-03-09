@@ -2,13 +2,20 @@ import { useForm } from 'react-hook-form';
 import TextField from '../uiKit/TextField';
 import SelectField from '../uiKit/SelectField';
 
-const CreateUser = ({ onSubmit }) => {
+import { useQuery } from '@tanstack/react-query';
+import { getUserApi } from '../services/users';
+const CreateUser = ({ onSubmit, editMode }) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
 
+  const { data, isLoading } = useQuery({
+    queryKey: ['user-api'],
+    queryFn: getUserApi,
+  });
+  console.log('editMode', editMode, data, isLoading);
   return (
     <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
       <TextField

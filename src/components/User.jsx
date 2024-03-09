@@ -8,6 +8,7 @@ import Modal from '../uiKit/Modal';
 import DeleteUser from './DeleteUser';
 import { useMutation } from '@tanstack/react-query';
 import { deleteUserApi } from '../services/users';
+import CreateUser from './CreateUser';
 
 const User = ({ user, index, onDelete }) => {
   const [modalState, setModealState] = useState({
@@ -46,7 +47,19 @@ const User = ({ user, index, onDelete }) => {
               title={`ویرایش ${user?.name}`}
               open={modalState.isEdit}
               onClose={() => setModealState({ ...modalState, isEdit: false })}
-            ></Modal>
+            >
+              <CreateUser
+                editMode={true}
+                onConfirm={() =>
+                  mutate(user.id, {
+                    onSuccess: () => {
+                      setModealState({ ...modalState, isDelete: false });
+                      onDelete(user?.id);
+                    },
+                  })
+                }
+              />
+            </Modal>
           </>
           <>
             <button

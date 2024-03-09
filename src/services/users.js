@@ -9,3 +9,12 @@ export function deleteUserApi(id) {
 export function createUserApi(data) {
   return apiInstance.post(`/users`, { data }).then(({ data }) => data);
 }
+
+export function getUserApi(id) {
+  return apiInstance.get(`/users/${id}`).then(({ data }) => data);
+}
+export function editUserAPi(data) {
+  return apiInstance
+    .put(`/users/${data.id}`, { data })
+    .then(({ data }) => data);
+}
