@@ -6,3 +6,6 @@ export function getUserListApi() {
 export function deleteUserApi(id) {
   return apiInstance.delete(`/users/${id}`).then(({ data }) => data);
 }
+export function createUserApi(data) {
+  return apiInstance.post(`/users`, { data }).then(({ data }) => data);
+}
