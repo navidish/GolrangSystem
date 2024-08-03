@@ -1,20 +1,20 @@
 import apiInstance from './apiServices';
 
-export function getUserListApi() {
-  return apiInstance.get('/users').then(({ data }) => data);
+export async function getUserListApi() {
+  return await apiInstance.get('/users').then(({ data }) => data);
 }
-export function deleteUserApi(id) {
-  return apiInstance.delete(`/users/${id}`).then(({ data }) => data);
+export async function deleteUserApi(id) {
+  return await apiInstance.delete(`/users/${id}`).then(({ data }) => data);
 }
-export function createUserApi(data) {
-  return apiInstance.post(`/users`, { data }).then(({ data }) => data);
+export async function createUserApi(data) {
+  return await apiInstance.post(`/users`, { data }).then(({ data }) => data);
 }
 
-export function getUserApi(id) {
-  return apiInstance.get(`/users/${id}`).then(({ data }) => data);
+export async function getUserApi(id) {
+  return await apiInstance.get(`/users/${id}`).then(({ data }) => data);
 }
-export function editUserAPi(data) {
-  return apiInstance
+export async function editUserAPi(data) {
+  return await apiInstance
     .put(`/users/${data.id}`, { data })
     .then(({ data }) => data);
 }

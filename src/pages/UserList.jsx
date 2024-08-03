@@ -1,22 +1,23 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createUserApi, getUserListApi } from '../services/users';
-import Loading from '../uiKit/Loading';
-import Empty from '../uiKit/Empty';
-import Table from '../uiKit/Table';
+import Loading from '../components/Loading';
+import Empty from '../components/Empty';
+import Table from '../components/Table';
 import User from './User';
 import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import Modal from '../uiKit/Modal';
+import Modal from '../components/Modal';
 import CreateUser from './CreateUser';
 import toast from 'react-hot-toast';
 import { IoIosSearch, IoIosClose } from 'react-icons/io';
-import ComboField from '../uiKit/ComboField';
+import ComboField from '../components/ComboField';
 
 const UserList = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['user-list'],
     queryFn: getUserListApi,
   });
+
   const { mutate } = useMutation({
     mutationFn: createUserApi,
     onSuccess: () => {
@@ -39,7 +40,14 @@ const UserList = () => {
   };
   const handleSearch = (event, searchValue) => {
     event.preventDefault();
-    setUsers(data.filter(({ username }) => username.includes(searchValue)));
+
+    setUsers(
+      !searchValue
+        ? data
+        : data.filter(({ username, name }) =>
+            searchValue.includes(username || name)
+          )
+    );
   };
 
   const handleChange = (event) => {
@@ -47,8 +55,12 @@ const UserList = () => {
     setUsers(data.filter((user) => user.name == event.target.value));
   };
 
-  if (!users?.length) return <Empty resourceName={'لیست کاربران'} />;
-  if (isLoading) return <Loading />;
+  if (isLoading)
+    return (
+      <div className="w-full bg-slate-100 h-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    );
 
   return (
     <div>
@@ -64,7 +76,7 @@ const UserList = () => {
           />
           <button
             onClick={(e) => handleSearch(e, search)}
-            className=" btn btn--primary flex justify-center items-center"
+            className=" btn btn--primary flex justify-center items-center "
           >
             <IoIosSearch />
           </button>
@@ -92,43 +104,49 @@ const UserList = () => {
           <span>افزودن کاربر</span>
         </button>
       </div>
-
       <Modal
         title={`افزودن کاربر `}
         open={userModal}
         onClose={() => setUserModal(false)}
       >
-        <CreateUser
-          onSubmit={(data) => {
-            mutate(data, {
-              onSuccess: () => setUserModal(false),
-            });
-          }}
-        />
+        {userModal && (
+          <CreateUser
+            onSubmit={(data) => {
+              mutate(data, {
+                onSuccess: () => setUserModal(false),
+              });
+            }}
+          />
+        )}
       </Modal>
-      <Table>
-        <Table.Header>
-          <th>#</th>
-          <th>نام‌ونام‌خانوادگی</th>
-          <th>نام کاربری</th>
-          <th>ایمیل</th>
-          <th>آدرس</th>
-          <th>شماره تماس</th>
-          <th>وب سایت</th>
-          <th>شرکت</th>
-          <th>عملیات</th>
-        </Table.Header>
-        <Table.Body>
-          {users?.map((user, index) => (
-            <User
-              key={user.id}
-              user={user}
-              index={index}
-              onDelete={handledelte}
-            />
-          ))}
-        </Table.Body>
-      </Table>
+      {!users?.length ? (
+        <Empty resourceName={'لیست کاربران'} />
+      ) : (
+        <Table>
+          <Table.Header>
+            <th>#</th>
+            <th>نام‌ونام‌خانوادگی</th>
+            <th>نام کاربری</th>
+            <th>ایمیل</th>
+            <th>آدرس</th>
+            <th>شماره تماس</th>
+            <th>وب سایت</th>
+            <th>شرکت</th>
+            <th>عملیات</th>
+          </Table.Header>
+          <Table.Body>
+            {users?.map((user, index) => (
+              <User
+                key={user.id}
+                user={user}
+                index={index}
+                onDelete={handledelte}
+                //onEdit={handleEdit}
+              />
+            ))}
+          </Table.Body>
+        </Table>
+      )}
     </div>
   );
 };

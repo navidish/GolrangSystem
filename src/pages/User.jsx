@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { TbPencilMinus } from 'react-icons/tb';
 import { toast } from 'react-hot-toast';
-import Table from '../uiKit/Table';
-import Modal from '../uiKit/Modal';
+import Table from '../components/Table';
+import Modal from '../components/Modal';
 import DeleteUser from './DeleteUser';
 import { useMutation } from '@tanstack/react-query';
 import { deleteUserApi } from '../services/users';
@@ -50,14 +50,10 @@ const User = ({ user, index, onDelete }) => {
             >
               <CreateUser
                 editMode={true}
-                onConfirm={() =>
-                  mutate(user.id, {
-                    onSuccess: () => {
-                      setModealState({ ...modalState, isDelete: false });
-                      onDelete(user?.id);
-                    },
-                  })
-                }
+                id={user?.id}
+                onConfirm={() => {
+                  console.log('hiiiiiiiiiii');
+                }}
               />
             </Modal>
           </>

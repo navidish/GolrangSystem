@@ -1,23 +1,34 @@
+/* eslint-disable no-unused-vars */
 import { useForm } from 'react-hook-form';
-import TextField from '../uiKit/TextField';
-import SelectField from '../uiKit/SelectField';
+import TextField from '../components/TextField';
+import SelectField from '../components/SelectField';
 
 import { useQuery } from '@tanstack/react-query';
 import { getUserApi } from '../services/users';
-const CreateUser = ({ onSubmit, editMode }) => {
+import Loading from '../components/Loading';
+const CreateUser = ({ onSubmit, id }) => {
+  console.log('id', id);
+  const { data, isLoading } = useQuery({
+    queryKey: ['user-api'],
+    queryFn: () => getUserApi(id),
+    enabled: !!id,
+  });
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm({ defaultValues: data || {} });
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['user-api'],
-    queryFn: getUserApi,
-  });
-  console.log('editMode', editMode, data, isLoading);
+  const { city: address } = data?.address || '';
+
+  if (isLoading) return <Loading />;
+
   return (
-    <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className=" grid grid-cols-2 gap-4 "
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <TextField
         label={'نام‌ونام‌خانوادگی'}
         name="name"
@@ -63,13 +74,14 @@ const CreateUser = ({ onSubmit, editMode }) => {
         validationSchema={{
           required: 'شماره تماس  ضروری است',
         }}
-        type="number"
+        type="text"
         errors={errors}
       />
       <SelectField
         label="آدرس"
         required
         name="address"
+        type="text"
         register={register}
         options={[
           { label: 'شیراز', value: 'شیراز' },
@@ -78,7 +90,7 @@ const CreateUser = ({ onSubmit, editMode }) => {
           { label: 'اصفهان', value: 'اصفهان' },
         ]}
       />
-      <button type="submit" className="btn btn--primary w-full">
+      <button type="submit" className="btn btn--primary w-full col-span-2">
         تایید
       </button>
     </form>

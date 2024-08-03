@@ -1,5 +1,5 @@
-import UserList from './components/UserList';
-import Header from './uiKit/Header';
+import UserList from './pages/UserList';
+import Header from './components/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const App = () => {
